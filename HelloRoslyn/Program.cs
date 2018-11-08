@@ -73,6 +73,7 @@ private void Test() {
                 }
             }");
 
+            var diagnostics = new List<NumericValueDiagnostic>();
             var compilation = CompileCode(tree);
             var model = compilation.GetSemanticModel(tree);
             foreach (var c in tree.GetRoot().DescendantNodes().OfType<ClassDeclarationSyntax>())
@@ -105,6 +106,19 @@ private void Test() {
                         builder.Append("\n] }");
 
                         Console.WriteLine("Builder: '\n{0}\n'", builder);
+                        System.IO.File.WriteAllText("input_code.json", builder.ToString());
+
+                        var process = new System.Diagnostics.Process();
+                        process.StartInfo.FileName = "numerical_value.exe";
+                        process.StartInfo.Arguments = "input_code.json diagnostics.json";
+                        process.StartInfo.CreateNoWindow = true;
+                        process.Start();
+                        process.WaitForExit();
+
+                        diagnostics.AddRange(Newtonsoft.Json.JsonConvert.DeserializeObject<List<NumericValueDiagnostic>>(System.IO.File.ReadAllText("diagnostics.json")));
+                        foreach (var diagnostic in diagnostics) {
+                            Console.WriteLine("{0}: {1}", diagnostic.location, diagnostic.message);
+                        }
                     }
                 }
             }
@@ -184,7 +198,6 @@ private void Test() {
                 }
                 else
                 {
-                    Console.WriteLine("node is {0} {1}", node, node.GetType());
                     builder.Append("{ \"type\": \"other\" }");
                 }
                 builder.Append(",\n    \"successors\": [");
