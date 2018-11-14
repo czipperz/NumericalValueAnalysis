@@ -3,6 +3,6 @@
     public class NumericValueDiagnostic
     {
         public string location;
-        public string message;
+        public bool always_true;
     }
 }

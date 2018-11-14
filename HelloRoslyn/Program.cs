@@ -117,7 +117,7 @@ private void Test() {
 
                         diagnostics.AddRange(Newtonsoft.Json.JsonConvert.DeserializeObject<List<NumericValueDiagnostic>>(System.IO.File.ReadAllText("diagnostics.json")));
                         foreach (var diagnostic in diagnostics) {
-                            Console.WriteLine("{0}: {1}", diagnostic.location, diagnostic.message);
+                            Console.WriteLine("{0}: This is always {1}", diagnostic.location, diagnostic.always_true);
                         }
                     }
                 }
